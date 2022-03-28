@@ -32,15 +32,17 @@ helm-package:
 
 helm-deploy:
 	step certificate create root.linkerd.cluster.local ca.crt ca.key --profile root-ca \
-       --no-password --insecure
+       --no-password --force --insecure
 	step certificate create identity.linkerd.cluster.local issuer.crt issuer.key \
        --profile intermediate-ca --not-after 8760h --no-password --insecure \
-       --ca ca.crt --ca-key ca.key
-	helm upgrade cloud-native-demo ./deploy/helm/cloud-native-demo \
-      --install --namespace cloud-native-demo --create-namespace --devel \
+       --force --ca ca.crt --ca-key ca.key
+	helm upgrade cloud-native-demo ./deploy/helm/cloud-native-demo --atomic \
+      --install --namespace cloud-native-demo --devel \
       --set-file linkerd2.identityTrustAnchorsPEM=ca.crt \
       --set-file linkerd2.identity.issuer.tls.crtPEM=issuer.crt \
       --set-file linkerd2.identity.issuer.tls.keyPEM=issuer.key
+	helm upgrade linkerd-viz linkerd-viz --repo https://helm.linkerd.io/stable \
+	  --install --namespace linkerd-viz --atomic
 
 kind-load: docker-image
 	kind load docker-image localhost:5001/bugsim:$(VERSION)
