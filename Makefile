@@ -42,7 +42,7 @@ helm-deploy:
       --set-file linkerd2.identity.issuer.tls.crtPEM=issuer.crt \
       --set-file linkerd2.identity.issuer.tls.keyPEM=issuer.key
 	helm upgrade linkerd-viz linkerd-viz --repo https://helm.linkerd.io/stable \
-	  --install --namespace linkerd-viz --atomic
+	  --install --namespace linkerd-viz --atomic --version 2.11.1
 
 kind-load: docker-image
 	kind load docker-image localhost:5001/bugsim:$(VERSION)
