@@ -1,6 +1,6 @@
 # Local Test Run
 
-If you want to show off the power of cloud-native sofware from the privacy of your personal laptop, you can do this too. 
+If you want to show off the power of cloud-native software from the privacy of your personal laptop, you can do this too. 
 
 ## Requirements
 
