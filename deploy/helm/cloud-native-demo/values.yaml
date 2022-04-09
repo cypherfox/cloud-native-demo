@@ -91,6 +91,11 @@ affinity: {}
 target:
   namespace: cloud-native-demo
   deployment: web
+  successRate: 15
+
+
+# configuration of dependant helm charts. Usually you should not need to change anything
+# below.
 
 emojivoto:
   namespace:

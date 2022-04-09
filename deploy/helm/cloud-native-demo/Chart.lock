@@ -8,5 +8,8 @@ dependencies:
 - name: linkerd2
   repository: https://helm.linkerd.io/stable
   version: 2.11.1
-digest: sha256:82ad9a1897e718e3c5962b01cc60bca45eb58ed10a0b3bdc43076cc75655de11
-generated: "2022-03-28T16:03:52.527479044+02:00"
+- name: linkerd-viz
+  repository: https://helm.linkerd.io/stable
+  version: 2.11.1
+digest: sha256:e576c18652c53bef86f32ed13d289e49059af05ec90c5bf1002ff64fd446878a
+generated: "2022-04-09T17:19:26.444835188+02:00"
