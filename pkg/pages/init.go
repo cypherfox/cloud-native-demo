@@ -1,6 +1,7 @@
 package pages
 
 import (
+	"embed"
 	"fmt"
 	"io"
 	"net/http"
@@ -8,28 +9,6 @@ import (
 
 	"github.com/cypherfox/cloud-native-demo/pkg/k8s"
 )
-
-const root_tpl = `
-<!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="UTF-8">
-		<title>Welcome to BugSim</title>
-	</head>
-	<body>
-	    <div class=welcome-msg>Willkommen zum Bugsimulator!<p>Möchtest du Bug spielen? Du hast eine 15% Wahrscheinlichkeit, den Pod zu erschießen, den du auswählst. Klicke einfach einen der Links mit den Namen der Pods unten</div>
-		<table>
-		<tr><th><div>Name</div></th><th><div>Status</div></th><th><div>Alter</div></th></tr>
-		{{range .Items}}
-		    <tr>
-			<td><div><a href="/api/delete/{{ .Name }}">{{ .Name }}</a></div></td>
-			<td><div>{{ .State }}</div></td>
-			<td><div>{{ .AgeString }}</div></td>
-			</tr>
-		{{else}}<div><strong>no pods</strong></div>{{end}}
-		</table>
-	</body>
-</html>`
 
 const failed_tpl = `
 <!DOCTYPE html>
@@ -63,15 +42,20 @@ type PagesSetup struct {
 	SuccessRate uint8
 }
 
+//go:embed root.tpl
+var root_templ_file embed.FS
 var root_templ *template.Template
+
 var failed_templ *template.Template
 var pod_table_templ *template.Template
 
+// remember config params for easier access.
 var setup PagesSetup
 
 func Init(s PagesSetup) error {
 	var err error
 
+	// TODO: move this setup and the variable in deleteSinglePod.go to the K8s package.
 	fmt.Println("Setting up Kubernetes Client")
 	k8sClient, err = k8s.NewKubeClient()
 	if err != nil {
@@ -79,7 +63,8 @@ func Init(s PagesSetup) error {
 		return err
 	}
 
-	root_templ, err = template.New("rootPage").Parse(root_tpl)
+	root_templ_data, _ := root_templ_file.ReadFile("root.tpl")
+	root_templ, err = template.New("rootPage").Parse(string(root_templ_data))
 	if err != nil {
 		fmt.Printf("Initializing root template failed: %s", err.Error())
 		return err

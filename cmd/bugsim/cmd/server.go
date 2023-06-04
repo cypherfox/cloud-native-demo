@@ -73,7 +73,7 @@ func doServer() error {
 	fmt.Println("Setting up pages")
 	router.HandleFunc("/", pages.RootPage)
 	router.HandleFunc("/api/delete/{id}", pages.DeleteSinglePod)
-	// router.HandleFunc("/ws/pod_info", pages.PodInfoReloaderWS)
+	router.HandleFunc("/ws/pod_list", pages.PodInfoReloaderWS)
 	http.Handle("/", router)
 
 	fmt.Printf("Starting to serve on port %d\n", Port)

@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/cypherfox/cloud-native-demo/pkg/version"
+	"github.com/hako/durafmt"
 	v1 "k8s.io/api/core/v1"
 )
 
@@ -16,10 +18,12 @@ type podData struct {
 
 func RootPage(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	err := respPrintf(w, "Hello, Bug from %s \n", r.RemoteAddr)
-	if err != nil {
-		return
-	}
+	/*
+		err := respPrintf(w, "Hello, Bug from %s \n", r.RemoteAddr)
+		if err != nil {
+			return
+		}
+	*/
 
 	podDataArr, err := getPodData()
 	if err != nil {
@@ -27,9 +31,13 @@ func RootPage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := struct {
-		Items []podData
+		Items       []podData
+		Version     string
+		SuccessRate uint8
 	}{
-		Items: *podDataArr,
+		Items:       *podDataArr,
+		Version:     version.BuildVersion,
+		SuccessRate: setup.SuccessRate,
 	}
 
 	err = root_templ.Execute(w, data)
@@ -53,14 +61,17 @@ func getPodData() (*[]podData, error) {
 		podDataArr = append(podDataArr, podData{
 			Name:      pod.GetName(),
 			State:     statusMessage(pod),
-			AgeString: time.Since(pod.GetCreationTimestamp().Time).String(),
+			AgeString: prettyPrintTime(time.Since(pod.GetCreationTimestamp().Time)),
 		})
-		fmt.Printf("%d: Setting %s to state %s, age %s",
-			len(podDataArr),
-			podDataArr[len(podDataArr)-1].Name,
-			podDataArr[len(podDataArr)-1].State,
-			podDataArr[len(podDataArr)-1].AgeString,
-		)
+
+		/*
+			fmt.Printf("%d: Setting %s to state %s, age %s\n",
+				len(podDataArr),
+				podDataArr[len(podDataArr)-1].Name,
+				podDataArr[len(podDataArr)-1].State,
+				podDataArr[len(podDataArr)-1].AgeString,
+			)
+		*/
 	}
 	return &podDataArr, nil
 }
@@ -70,4 +81,10 @@ func statusMessage(pod v1.Pod) string {
 		return "Terminating"
 	}
 	return string(pod.Status.Phase)
+}
+
+func prettyPrintTime(duration time.Duration) string {
+	durStr := durafmt.Parse(duration).LimitFirstN(3).String()
+
+	return durStr
 }
