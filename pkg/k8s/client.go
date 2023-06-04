@@ -2,13 +2,19 @@ package k8s
 
 import (
 	"context"
+	"errors"
+	"flag"
 	"fmt"
+	"os"
+	"path/filepath"
 
 	appsV1 "k8s.io/api/apps/v1"
 	coreV1 "k8s.io/api/core/v1"
 	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
+	"k8s.io/client-go/tools/clientcmd"
+	"k8s.io/client-go/util/homedir"
 )
 
 type Error string
@@ -27,11 +33,8 @@ type K8sClient struct {
 func NewKubeClient() (*K8sClient, error) {
 	var client K8sClient
 
-	// creates the in-cluster config
-	config, err := rest.InClusterConfig()
-	if err != nil {
-		return nil, err
-	}
+	config, err := buildConfig()
+
 	// creates the clientset
 	client.Client, err = kubernetes.NewForConfig(config)
 	if err != nil {
@@ -39,6 +42,41 @@ func NewKubeClient() (*K8sClient, error) {
 	}
 
 	return &client, nil
+}
+
+func buildConfig() (*rest.Config, error) {
+
+	var kubeconfig *string
+	if home := homedir.HomeDir(); home != "" {
+		kubeconfig = flag.String("kubeconfig", filepath.Join(home, ".kube", "config"), "(optional) absolute path to the kubeconfig file")
+	} else {
+		kubeconfig = flag.String("kubeconfig", "", "absolute path to the kubeconfig file")
+	}
+
+	// assume out-of-cluster config when kubeconfig file exists
+	_, err := os.Stat(*kubeconfig)
+
+	var config *rest.Config
+	if errors.Is(err, os.ErrNotExist) {
+		// creates the in-cluster config
+		config, err = rest.InClusterConfig()
+		if err != nil {
+			return nil, err
+		}
+
+	} else if err != nil {
+		// other errors
+		return nil, err
+
+	} else {
+		// use the current context in kubeconfig
+		config, err = clientcmd.BuildConfigFromFlags("", *kubeconfig)
+		if err != nil {
+			panic(err.Error())
+		}
+	}
+
+	return config, nil
 }
 
 func (kc *K8sClient) GetPods(namespace string, deplName string) (*coreV1.PodList, error) {

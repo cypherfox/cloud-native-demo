@@ -3,7 +3,6 @@ package pages
 import (
 	"bytes"
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -22,7 +21,7 @@ const (
 	pingPeriod = (pongWait * 9) / 10
 
 	// Poll file for changes with this period.
-	filePeriod = 10 * time.Second
+	filePeriod = 2 * time.Second
 )
 
 var upgrader = websocket.Upgrader{
@@ -35,7 +34,7 @@ func PodInfoReloaderWS(w http.ResponseWriter, r *http.Request) {
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		if _, ok := err.(websocket.HandshakeError); !ok {
-			log.Println(err)
+			fmt.Printf("Upgrading request to WebSocket failed: %s\n", err)
 		}
 		return
 	}
