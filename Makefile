@@ -46,7 +46,7 @@ kind-load: docker-image
 	kind load docker-image localhost:5001/bugsim:$(VERSION)
 
 run-local:
-	kubectl run bugsim --image=localhost:5001/bugsim:$(VERSION) --serviceaccount=bugsim-sa --expose --port=80 -- /bugsim server -p 80
+	kubectl run bugsim --image=localhost:5001/bugsim:$(VERSION) --expose --port=80 -- /bugsim server -p 80
 
 stop-local:
 	kubectl delete deployment bugsim

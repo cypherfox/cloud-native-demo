@@ -4,7 +4,7 @@ metadata:
   labels:
     app.kubernetes.io/name: emoji
     app.kubernetes.io/part-of: emojivoto
-    app.kubernetes.io/version: v11
+    app.kubernetes.io/version: v12
   name: emoji
   namespace: {{ .Values.namespace.name }}
 spec:
@@ -12,12 +12,12 @@ spec:
   selector:
     matchLabels:
       app: emoji-svc
-      version: v11
+      version: v12
   template:
     metadata:
       labels:
         app: emoji-svc
-        version: v11
+        version: v12
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -32,7 +32,7 @@ spec:
           value: "8080"
         - name: PROM_PORT
           value: "8801"
-        image: docker.l5d.io/buoyantio/emojivoto-emoji-svc:v11
+        image: docker.l5d.io/buoyantio/emojivoto-emoji-svc:v12
         name: emoji-svc
         ports:
         - containerPort: 8080
@@ -49,7 +49,7 @@ metadata:
   labels:
     app.kubernetes.io/name: vote-bot
     app.kubernetes.io/part-of: emojivoto
-    app.kubernetes.io/version: v11
+    app.kubernetes.io/version: v12
   name: vote-bot
   namespace: {{ .Values.namespace.name }}
 spec:
@@ -57,12 +57,12 @@ spec:
   selector:
     matchLabels:
       app: vote-bot
-      version: v11
+      version: v12
   template:
     metadata:
       labels:
         app: vote-bot
-        version: v11
+        version: v12
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -77,7 +77,7 @@ spec:
         env:
         - name: WEB_HOST
           value: {{ include "emojivoto.fullname" . }}-web-svc.{{ .Values.namespace.name }}:80
-        image: docker.l5d.io/buoyantio/emojivoto-web:v11
+        image: docker.l5d.io/buoyantio/emojivoto-web:v12
         name: vote-bot
         resources:
           requests:
@@ -89,7 +89,7 @@ metadata:
   labels:
     app.kubernetes.io/name: voting
     app.kubernetes.io/part-of: emojivoto
-    app.kubernetes.io/version: v11
+    app.kubernetes.io/version: v12
   name: voting
   namespace: {{ .Values.namespace.name }}
 spec:
@@ -97,12 +97,12 @@ spec:
   selector:
     matchLabels:
       app: voting-svc
-      version: v11
+      version: v12
   template:
     metadata:
       labels:
         app: voting-svc
-        version: v11
+        version: v12
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -117,7 +117,7 @@ spec:
           value: "8080"
         - name: PROM_PORT
           value: "8801"
-        image: docker.l5d.io/buoyantio/emojivoto-voting-svc:v11
+        image: docker.l5d.io/buoyantio/emojivoto-voting-svc:v12
         name: voting-svc
         ports:
         - containerPort: 8080
@@ -135,7 +135,7 @@ metadata:
   labels:
     app.kubernetes.io/name: web
     app.kubernetes.io/part-of: emojivoto
-    app.kubernetes.io/version: v11
+    app.kubernetes.io/version: v12
   name: web
   namespace: {{ .Values.namespace.name }}
 spec:
@@ -143,12 +143,12 @@ spec:
   selector:
     matchLabels:
       app: web-svc
-      version: v11
+      version: v12
   template:
     metadata:
       labels:
         app: web-svc
-        version: v11
+        version: v12
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -167,7 +167,7 @@ spec:
           value: {{ include "emojivoto.fullname" . }}-voting-svc.{{ .Values.namespace.name }}:8080
         - name: INDEX_BUNDLE
           value: dist/index_bundle.js
-        image: docker.l5d.io/buoyantio/emojivoto-web:v11
+        image: docker.l5d.io/buoyantio/emojivoto-web:v12
         name: web-svc
         ports:
         - containerPort: 8080
