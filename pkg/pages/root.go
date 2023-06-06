@@ -48,6 +48,12 @@ func RootPage(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func StyleSheet(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/css; charset=utf-8")
+
+	w.Write(style_css)
+}
+
 func getPodData() (*[]podData, error) {
 	pods, err := k8sClient.GetPods(setup.Namespace, setup.Deployment)
 	if err != nil {

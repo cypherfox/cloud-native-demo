@@ -72,6 +72,7 @@ func doServer() error {
 
 	fmt.Println("Setting up pages")
 	router.HandleFunc("/", pages.RootPage)
+	router.HandleFunc("/style.css", pages.StyleSheet)
 	router.HandleFunc("/api/delete/{id}", pages.DeleteSinglePod)
 	router.HandleFunc("/ws/pod_list", pages.PodInfoReloaderWS)
 	http.Handle("/", router)
