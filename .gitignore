@@ -1,1 +1,6 @@
 tools/
+ca.crt
+ca.key
+issuer.crt
+issuer.key
+deploy/helm/cloud-native-demo-0.1.0.tgz

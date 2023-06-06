@@ -24,7 +24,7 @@ const failed_tpl = `
 </html>`
 
 const pod_table_tpl = `
-	<table>
+	<table class="resources">
 	<tr><th><div>Name</div></th><th><div>Status</div></th><th><div>Alter</div></th></tr>
 	{{range .Items}}
 	    <tr>
@@ -41,6 +41,10 @@ type PagesSetup struct {
 	Deployment  string
 	SuccessRate uint8
 }
+
+//go:embed style.css
+var style_css_file embed.FS
+var style_css []byte
 
 //go:embed root.tpl
 var root_templ_file embed.FS
@@ -62,6 +66,8 @@ func Init(s PagesSetup) error {
 		fmt.Printf("Initializing Kubernetes client failed: %s", err.Error())
 		return err
 	}
+
+	style_css, _ = style_css_file.ReadFile("style.css")
 
 	root_templ_data, _ := root_templ_file.ReadFile("root.tpl")
 	root_templ, err = template.New("rootPage").Parse(string(root_templ_data))
