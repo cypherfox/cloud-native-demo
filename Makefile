@@ -6,7 +6,7 @@ TOOLS_DIR  ?= $(shell cd tools 2>/dev/null && pwd)
 VERSION    := 0.0.4-dev28
 TIME       := $(shell date)
 GO_MODULE  := github.com/cypherfox/cloud-native-demo
-GO_VERSION := 1.18
+GO_VERSION := 1.22
 LDFLAGS    := "-extldflags=-static -X '$(GO_MODULE)/pkg/version.BuildTime=$(TIME)' -X '$(GO_MODULE)/pkg/version.BuildVersion=$(VERSION)'"
 
 
