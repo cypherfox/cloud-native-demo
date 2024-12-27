@@ -48,7 +48,7 @@ jobs:
     
     # upload the resulting artifact
     - name: Retain build artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: bugsim-binary
         path: bin/bugsim
